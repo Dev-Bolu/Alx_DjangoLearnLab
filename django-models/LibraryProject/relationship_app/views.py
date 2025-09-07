@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import Library, Book, Author, Librarian
 from django.views.generic.detail import DetailView
 # Create your views here.
-def book_list(request):
+def list_books(request):
     # Query all books
     books = Book.objects.all()
     # Pass the books to the template
