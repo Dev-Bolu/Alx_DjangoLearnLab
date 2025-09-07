@@ -1,3 +1,4 @@
+'''
 from django.shortcuts import render, redirect
 from .models import Library, Book, Author, Librarian
 from django.views.generic.detail import DetailView
@@ -52,3 +53,43 @@ def login_view(request):
 def logout_view(request):
     logout(request)  # remove session
     return render(request, "relationship_app/logout.html")
+'''
+
+from django.urls import reverse_lazy
+from django.views.generic import FormView, TemplateView
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+
+# ✅ Register View
+class RegisterView(FormView):
+    template_name = "relationship_app/register.html"
+    form_class = UserCreationForm
+    success_url = reverse_lazy("home")
+
+    def form_valid(self, form):
+        user = form.save()  # save the user
+        login(self.request, user)  # log them in
+        return super().form_valid(form)
+
+
+# ✅ Login View
+class LoginView(FormView):
+    template_name = "relationship_app/login.html"
+    form_class = AuthenticationForm
+    success_url = reverse_lazy("home")
+
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)  # start session
+        return super().form_valid(form)
+
+
+# ✅ Logout View
+class LogoutView(LoginRequiredMixin, TemplateView):
+    template_name = "relationship_app/logout.html"
+
+    def get(self, request, *args, **kwargs):
+        logout(request)  # clear session
+        return super().get(request, *args, **kwargs)
