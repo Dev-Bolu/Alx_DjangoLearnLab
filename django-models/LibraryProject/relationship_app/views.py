@@ -61,6 +61,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import user_passes_test
 
 # ✅ Register View
 class RegisterView(FormView):
@@ -93,3 +94,4 @@ class LogoutView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         logout(request)  # clear session
         return super().get(request, *args, **kwargs)
+
