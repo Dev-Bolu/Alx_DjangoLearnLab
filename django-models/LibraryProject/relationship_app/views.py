@@ -6,7 +6,7 @@ def book_list(request):
     # Query all books
     books = Book.objects.all()
     # Pass the books to the template
-    return render(request, 'list_books.html', {'books': books})
+    return render(request, 'relationship_app/list_books.html', {'books': books})
 
 class LibraryDetailView(DetailView):
     model = Library
