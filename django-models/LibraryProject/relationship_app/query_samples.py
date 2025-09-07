@@ -1,8 +1,18 @@
+import os
+import django
+
+# Setup Django environment (only needed if running as standalone script)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_models.settings")
+django.setup()
+
+from relationship_app.models import Author, Book, Library, Librarian
+
+
+
 def run_queries():
-    # 1. Query all books by a specific author
     author_name = "J.K. Rowling"
     author = Author.objects.get(name=author_name)
-    books_by_author = author.books.all()
+    books_by_author = Book.objects.filter(author=author)  # filter all books with this author
     print(f"Books by {author_name}: {[book.title for book in books_by_author]}")
 
     # 2. List all books in a library
