@@ -26,3 +26,6 @@ class BookForm(forms.ModelForm):
         if year < 0 or year > current_year + 1:
             raise forms.ValidationError("Enter a valid publication year.")
         return year
+
+class ExampleForm(forms.Form):
+    example_field = forms.CharField(max_length=100)

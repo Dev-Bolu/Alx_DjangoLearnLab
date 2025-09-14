@@ -69,5 +69,3 @@ class UserProfile(models.Model):
 from django import forms
 
 # A simple example form just for learning purposes
-class ExampleForm(forms.Form):
-    example_field = forms.CharField(max_length=100)
