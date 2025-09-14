@@ -64,3 +64,10 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+from django import forms
+
+# A simple example form just for learning purposes
+class ExampleForm(forms.Form):
+    example_field = forms.CharField(max_length=100)
