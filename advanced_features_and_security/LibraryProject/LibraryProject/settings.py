@@ -29,3 +29,6 @@ SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
 
 # Content Security Policy (if using django-csp via settings; values shown below)
 # See CSP section for instructions to install and middleware changes
+
+# Tell Django how to detect HTTPS requests behind a proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
