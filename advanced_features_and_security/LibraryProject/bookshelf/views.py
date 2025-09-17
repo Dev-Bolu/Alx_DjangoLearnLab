@@ -72,3 +72,16 @@ def user_profile(request):
         return redirect("user_profile")
 
     return render(request, "accounts/user_profile.html", {"profile": profile})
+
+@login_required
+def example_view(request):
+    """Handle ExampleForm submission."""
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data["example_field"]
+            return HttpResponse(f"You entered: {data}")
+    else:
+        form = ExampleForm()
+
+    return render(request, "example_form.html", {"form": form})
