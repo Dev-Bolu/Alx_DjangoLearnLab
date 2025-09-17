@@ -66,6 +66,4 @@ class UserProfile(models.Model):
         return self.user.username
 
 
-from django import forms
-
 # A simple example form just for learning purposes
