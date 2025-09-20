@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
-from .models import Book, CustomUser, UserProfile
+from .models import Book, UserProfile
 from .forms import ExampleForm
 
 
@@ -9,7 +9,7 @@ from .forms import ExampleForm
 # --- BOOK VIEWS --- #
 
 @login_required
-@permission_required("accounts.can_view", raise_exception=True)
+@permission_required("bookshelf.can_view", raise_exception=True)
 def book_list(request):
     """List all books (requires 'can_view' permission)."""
     books = Book.objects.all()
@@ -17,7 +17,7 @@ def book_list(request):
 
 
 @login_required
-@permission_required("accounts.can_create", raise_exception=True)
+@permission_required("bookshelf.can_create", raise_exception=True)
 def book_create(request):
     """Create a new book (requires 'can_create' permission)."""
     if request.method == "POST":
@@ -35,7 +35,7 @@ def book_create(request):
 
 
 @login_required
-@permission_required("accounts.can_edit", raise_exception=True)
+@permission_required("bookshelf.can_edit", raise_exception=True)
 def book_edit(request, pk):
     """Edit an existing book (requires 'can_edit' permission)."""
     book = get_object_or_404(Book, pk=pk)
@@ -49,7 +49,7 @@ def book_edit(request, pk):
 
 
 @login_required
-@permission_required("accounts.can_delete", raise_exception=True)
+@permission_required("bookshelf.can_delete", raise_exception=True)
 def book_delete(request, pk):
     """Delete a book (requires 'can_delete' permission)."""
     book = get_object_or_404(Book, pk=pk)
