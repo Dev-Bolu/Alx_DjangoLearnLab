@@ -1,14 +1,8 @@
-
-
-# Create your views here.
-from rest_framework import generics
-from .serializers import BookSerializer
+# views.py (DRF)
+from rest_framework.generics import ListAPIView
 from .models import Book
+from .serializers import BookSerializer
 
-class BookListView(generics.ListAPIView):
+class BookList(ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    
-    
-
-
