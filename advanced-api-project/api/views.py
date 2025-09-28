@@ -1,62 +1,38 @@
-from rest_framework import generics, permissions
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
 from .serializers import BookSerializer
-from datetime import datetime
 
-# ✅ ListView → Get all books
+# List all books
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]  # anyone can view
 
 
-# ✅ DetailView → Get a single book by ID
+# Retrieve a single book by ID
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-# ✅ CreateView → Add a new book
+# Create a new book
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # only logged-in users can create
-
-    def perform_create(self, serializer):
-        # Example: add extra validation or auto-assign fields
-        if serializer.validated_data["publication_year"] > datetime.now().year:
-            raise ValueError("Publication year cannot be in the future.")
-        serializer.save()
+    permission_classes = [IsAuthenticated]  # only authenticated users can create
 
 
-
-# ✅ UpdateView → Modify an existing book
+# Update an existing book
 class BookUpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # only logged-in users can update
-
-    def perform_update(self, serializer):
-        if serializer.validated_data.get("publication_year") and serializer.validated_data["publication_year"] > datetime.now().year:
-            raise ValueError("Publication year cannot be in the future.")
-        serializer.save()
+    permission_classes = [IsAuthenticated]  # only authenticated users can update
 
 
-# ✅ DeleteView → Remove a book
+# Delete a book
 class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # only logged-in users can delete
-
-# Book CRUD Views:
-# - BookListView → GET all books
-# - BookDetailView → GET single book by ID
-# - BookCreateView → POST new book (auth required)
-# - BookUpdateView → PUT/PATCH existing book (auth required)
-# - BookDeleteView → DELETE a book (auth required)
-#
-# Permissions:
-# - Read (list/retrieve) is open
-# - Write (create/update/delete) requires authentication
-#
-# Validation:
-# - publication_year cannot be in the future
+    permission_classes = [IsAuthenticated]  # only authenticated users can delete
