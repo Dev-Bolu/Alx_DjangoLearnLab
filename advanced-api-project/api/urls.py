@@ -22,3 +22,4 @@ urlpatterns = [
 
     # Delete a book (ID must come from request body/query params)
     path('books/delete/', BookDeleteView.as_view(), name='book-delete'),
+]
