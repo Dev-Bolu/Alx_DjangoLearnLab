@@ -26,6 +26,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
 
     # Tags & search
-    path('tags/<str:tag_name>/', views.TagPostsListView.as_view(), name='tag-posts'),
+     # ✅ New Tag and Search functionality
+    path('tags/<slug:tag_slug>/', views.PostByTagListView.as_view(), name='posts-by-tag'),
     path('search/', views.search, name='search'),
 ]
