@@ -1,0 +1,33 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Login - Django Blog{% endblock %}
+
+{% block content %}
+<section class="auth auth-login">
+    <h1>Login</h1>
+
+    {% if form.errors %}
+    <div class="form-errors">
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'blog:login' %}">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div class="form-row">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+        <button type="submit">Login</button>
+        {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+    </form>
+
+    <p>Don't have an account? <a href="{% url 'blog:register' %}">Register</a></p>
+</section>
+{% endblock %}
