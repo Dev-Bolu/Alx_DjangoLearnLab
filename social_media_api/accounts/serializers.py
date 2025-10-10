@@ -2,10 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework.authtoken.models import Token
 
-User = get_user_model()  # dynamically get the active user model
+User = get_user_model()
 
 
-# ------------------ USER REGISTRATION SERIALIZER ------------------
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -15,8 +14,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Create a new user using Django's built-in manager,
-        then generate an authentication token.
+        Create a new user with password hashing and auto token generation.
         """
         user = User.objects.create_user(
             username=validated_data['username'],
@@ -24,12 +22,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             bio=validated_data.get('bio', ''),
         )
-        # create token for user
+
+        # Auto-create DRF token for the new user
         Token.objects.create(user=user)
         return user
 
 
-# ------------------ USER LOGIN SERIALIZER ------------------
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -37,6 +35,6 @@ class UserLoginSerializer(serializers.Serializer):
     def validate(self, data):
         user = authenticate(username=data['username'], password=data['password'])
         if not user:
-            raise serializers.ValidationError("Invalid credentials.")
+            raise serializers.ValidationError("Invalid username or password.")
         data['user'] = user
         return data
