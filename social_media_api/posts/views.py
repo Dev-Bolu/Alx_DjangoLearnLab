@@ -1,10 +1,13 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.authentication import TokenAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
+from django.contrib.auth import get_user_model
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
+
+User = get_user_model()
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
@@ -25,9 +28,8 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     pagination_class = StandardResultsSetPagination
 
-    # Filtering/search
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = []  # add any exact filters, e.g., ['author__username']
+    filterset_fields = []
     search_fields = ['title', 'content']
     ordering_fields = ['created_at', 'updated_at']
 
@@ -48,9 +50,25 @@ class CommentViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['post']  # allow ?post=<post_id> to list comments for a post
+    filterset_fields = ['post']
     search_fields = ['content']
     ordering_fields = ['created_at', 'updated_at']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class FeedView(generics.ListAPIView):
+    """
+    GET /api/feed/ - returns posts from users the current user follows,
+    ordered by newest first.
+    """
+    serializer_class = PostSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        following_qs = user.following.all() if hasattr(user, 'following') else User.objects.none()
+        return Post.objects.filter(author__in=following_qs).order_by('-created_at')
