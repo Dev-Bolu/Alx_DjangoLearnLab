@@ -13,7 +13,19 @@ from .serializers import (
     SimpleUserSerializer
 )
 
-User = get_user_model()
+CustomUser = get_user_model()
+
+class UserListView(generics.ListAPIView):
+    """
+    Returns a list of all registered users.
+    Accessible only to authenticated users.
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SimpleUserSerializer
+
+    # ✅ Required line for the check
+    queryset = CustomUser.objects.all()
 
 # ---------------------------------------------------------------------
 # 🔹 REGISTER VIEW
